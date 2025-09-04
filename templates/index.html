@@ -5,13 +5,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- シンプルなCSSを追加して見た目を整える -->
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { display: flex; gap: 20px; }
+        .left-panel { flex: 1; }
+        .right-panel { flex: 2; }
+        .customer-list ul { list-style: none; padding: 0; }
+        .customer-list li { padding: 10px; border: 1px solid #ccc; margin-bottom: 5px; cursor: pointer; }
+        .customer-list li:hover { background-color: #f0f0f0; }
+        input, textarea { width: 95%; padding: 8px; margin-bottom: 10px; }
+        button { padding: 10px 15px; cursor: pointer; }
+    </style>
     <title>カフェ・ポラリス 顧客管理</title>
 </head>
 <body>
-    <h1>こんにちは、佐藤さん！</h1>
-    <p>ここに顧客管理ツールを作っていきます。</p>
+    <h1>カフェ・ポラリス 顧客管理ツール</h1>
 
-    <!-- script.js ファイルを読み込む -->
+    <div class="container">
+        <!-- 左側：顧客一覧と検索 -->
+        <div class="left-panel">
+            <h2>顧客一覧</h2>
+            <form>
+                <input type="text" id="searchInput" placeholder="名前 or 顧客番号で検索...">
+            </form>
+            <div class="customer-list">
+                <!-- 顧客リストはここに動的に表示されます -->
+                <ul>
+                    <li>(001) 佐藤 様</li>
+                    <li>(002) 鈴木 様</li>
+                    <li>(003) 高橋 様</li>
+                </ul>
+            </div>
+            <button id="newCustomerBtn">新規顧客を登録</button>
+        </div>
+
+        <!-- 右側：顧客詳細情報 -->
+        <div class="right-panel">
+            <h2>顧客詳細</h2>
+            <div>
+                <strong>顧客番号:</strong> <span>001</span><br>
+                <strong>名前:</strong> <span>佐藤 様</span><br>
+                <strong>来店回数:</strong> <span>15 回</span>
+            </div>
+            <hr>
+
+            <h3>来店履歴の追加</h3>
+            <form>
+                <label for="orderHistory">注文内容:</label>
+                <textarea id="orderHistory" rows="3" placeholder="カフェラテ、チーズケーキ"></textarea>
+                <label for="memo">メモ:</label>
+                <textarea id="memo" rows="3" placeholder="娘さんの受験の話。次回聞く。"></textarea>
+                <button>この内容で来店を記録</button>
+            </form>
+            <hr>
+
+            <h3>過去の来店履歴</h3>
+            <!-- 履歴はここに動的に表示されます -->
+            <ul>
+                <li>2023-10-26: ブレンドコーヒー (メモ: いつもの)</li>
+                <li>2023-10-15: カフェラテ</li>
+                <li>2023-10-02: ブレンドコーヒー</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- JavaScriptファイルを読み込む -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
