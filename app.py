@@ -48,7 +48,23 @@ def index():
     return render_template('index.html', customers=customers_data)
 
 # --- ↑↑↑ ここまでが今回のメイン ↑↑↑ ---
+# app.py の末尾に追記
 
+# --- 新規顧客を追加するための処理 ---
+@app.route('/add', methods=['POST'])
+def add_customer():
+    # フォームから 'customer_name' の値を取得
+    name = request.form['customer_name']
+    
+    # データベースに接続
+    db = get_db()
+    # 新しい顧客をcustomersテーブルに挿入
+    db.execute('INSERT INTO customers (name) VALUES (?)', (name,))
+    # 変更を確定
+    db.commit()
+    
+    # 登録が終わったら、トップページにリダイレクト（再表示）する
+    return redirect(url_for('index'))
 # このファイルが直接実行された場合にアプリを起動 (変更なし)
 if __name__ == '__main__':
     # データベース初期化用のコマンドを追加 (後で使う)
