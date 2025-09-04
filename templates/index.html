@@ -41,7 +41,13 @@
                     {% endfor %}
                 </ul>
             </div>
-            <button id="newCustomerBtn">新規顧客を登録</button>
+                        <hr>
+            <h3>新規顧客の登録</h3>
+            <form action="{{ url_for('add_customer') }}" method="post">
+                <label for="customerName">顧客名:</label>
+                <input type="text" id="customerName" name="customer_name" required>
+                <button type="submit">登録</button>
+            </form>
         </div>
 
         <!-- 右側：顧客詳細情報 -->
