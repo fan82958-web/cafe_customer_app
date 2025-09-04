@@ -30,11 +30,15 @@
                 <input type="text" id="searchInput" placeholder="名前 or 顧客番号で検索...">
             </form>
             <div class="customer-list">
-                <!-- 顧客リストはここに動的に表示されます -->
                 <ul>
-                    <li>(001) 佐藤 様</li>
-                    <li>(002) 鈴木 様</li>
-                    <li>(003) 高橋 様</li>
+                    <!-- ここからがJinja2テンプレートエンジンの魔法 -->
+                    {% for customer in customers %}
+                    <li>
+                        ({{ '%03d'|format(customer['id']) }}) {{ customer['name'] }} 様
+                    </li>
+                    {% else %}
+                    <li>まだ顧客が登録されていません。</li>
+                    {% endfor %}
                 </ul>
             </div>
             <button id="newCustomerBtn">新規顧客を登録</button>
