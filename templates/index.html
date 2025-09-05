@@ -7,15 +7,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- シンプルなCSSを追加して見た目を整える -->
     <style>
-        body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        .container { display: flex; gap: 20px; }
+        :root {
+            --primary-color: #6a4c3a; /* カフェのテーマカラー（ブラウン） */
+            --secondary-color: #f5f0e1; /* 背景色（クリーム） */
+            --accent-color: #a27b60; /* アクセントカラー */
+            --font-color: #3d3d3d;
+            --border-color: #ddd;
+        }
+        body { 
+            font-family: 'Helvetica Neue', 'Arial', 'Hiragino Sans', 'Meiryo', sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--font-color);
+            max-width: 960px; 
+            margin: 0 auto; 
+            padding: 20px;
+        }
+        h1, h2, h3 { color: var(--primary-color); }
+        .container { display: flex; gap: 30px; }
         .left-panel { flex: 1; }
-        .right-panel { flex: 2; }
+        .right-panel { flex: 2; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
         .customer-list ul { list-style: none; padding: 0; }
-        .customer-list li { padding: 10px; border: 1px solid #ccc; margin-bottom: 5px; cursor: pointer; }
-        .customer-list li:hover { background-color: #f0f0f0; }
-        input, textarea { width: 95%; padding: 8px; margin-bottom: 10px; }
-        button { padding: 10px 15px; cursor: pointer; }
+        .customer-list a { text-decoration: none; color: inherit; }
+        .customer-list li { 
+            padding: 12px; 
+            border: 1px solid var(--border-color); 
+            margin-bottom: 8px; 
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+        }
+        .customer-list li:hover { background-color: #fff; transform: translateY(-2px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .customer-list li.selected {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        form { margin-top: 20px; }
+        input[type="text"], input[type="date"], textarea { 
+            width: 95%; 
+            padding: 10px; 
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button { 
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 20px; 
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s ease;
+        }
+        button:hover { background-color: var(--accent-color); }
+        hr { border: 0; border-top: 1px solid var(--border-color); margin: 20px 0; }
     </style>
     <title>カフェ・ポラリス 顧客管理</title>
 </head>
@@ -34,7 +83,7 @@
                     <!-- ここからがJinja2テンプレートエンジンの魔法 -->
                     {% for customer in customers %}
                         <a href="{{ url_for('index', customer_id=customer['id']) }}" style="text-decoration: none; color: inherit;">
-                            <li {% if selected_customer and selected_customer['id'] == customer['id'] %}style="background-color: #e0e0e0;"{% endif %}>
+                            <li class="{% if selected_customer and selected_customer['id'] == customer['id'] %}selected{% endif %}">
                                 ({{ '%03d'|format(customer['id']) }}) {{ customer['name'] }} 様
                             </li>
                         </a>
