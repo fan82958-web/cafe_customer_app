@@ -33,9 +33,11 @@
                 <ul>
                     <!-- ここからがJinja2テンプレートエンジンの魔法 -->
                     {% for customer in customers %}
-                    <li>
-                        ({{ '%03d'|format(customer['id']) }}) {{ customer['name'] }} 様
-                    </li>
+                        <a href="{{ url_for('index', customer_id=customer['id']) }}" style="text-decoration: none; color: inherit;">
+                            <li {% if selected_customer and selected_customer['id'] == customer['id'] %}style="background-color: #e0e0e0;"{% endif %}>
+                                ({{ '%03d'|format(customer['id']) }}) {{ customer['name'] }} 様
+                            </li>
+                        </a>
                     {% else %}
                     <li>まだ顧客が登録されていません。</li>
                     {% endfor %}
@@ -50,35 +52,42 @@
             </form>
         </div>
 
-        <!-- 右側：顧客詳細情報 -->
-        <div class="right-panel">
-            <h2>顧客詳細</h2>
-            <div>
-                <strong>顧客番号:</strong> <span>001</span><br>
-                <strong>名前:</strong> <span>佐藤 様</span><br>
-                <strong>来店回数:</strong> <span>15 回</span>
-            </div>
-            <hr>
-
-            <h3>来店履歴の追加</h3>
-            <form>
-                <label for="orderHistory">注文内容:</label>
-                <textarea id="orderHistory" rows="3" placeholder="カフェラテ、チーズケーキ"></textarea>
-                <label for="memo">メモ:</label>
-                <textarea id="memo" rows="3" placeholder="娘さんの受験の話。次回聞く。"></textarea>
-                <button>この内容で来店を記録</button>
-            </form>
-            <hr>
-
-            <h3>過去の来店履歴</h3>
-            <!-- 履歴はここに動的に表示されます -->
-            <ul>
-                <li>2023-10-26: ブレンドコーヒー (メモ: いつもの)</li>
-                <li>2023-10-15: カフェラテ</li>
-                <li>2023-10-02: ブレンドコーヒー</li>
-            </ul>
-        </div>
+<!-- index.html の右パネル部分 -->
+<div class="right-panel">
+    {% if selected_customer %}
+    <h2>顧客詳細</h2>
+    <div>
+        <strong>顧客番号:</strong> <span>{{ '%03d'|format(selected_customer['id']) }}</span><br>
+        <strong>名前:</strong> <span>{{ selected_customer['name'] }} 様</span><br>
+        <strong>来店回数:</strong> <span>{{ selected_customer['visit_count'] }} 回</span>
     </div>
+    <hr>
+
+    <h3>来店履歴の追加</h3>
+    <!-- このフォームは次のステップで実装 -->
+    <form>
+        ...
+    </form>
+    <hr>
+
+    <h3>過去の来店履歴 (直近5件)</h3>
+    <ul>
+        {% for visit in visits[:5] %}
+        <li>
+            <strong>{{ visit['visit_date'] }}:</strong> {{ visit['orders'] }}
+            {% if visit['memo'] %}
+            <br><small><em>メモ: {{ visit['memo'] }}</em></small>
+            {% endif %}
+        </li>
+        {% else %}
+        <li>まだ来店履歴がありません。</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <h2>顧客詳細</h2>
+    <p>左のリストから顧客を選択してください。</p>
+    {% endif %}
+</div>
 
     <!-- JavaScriptファイルを読み込む -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>

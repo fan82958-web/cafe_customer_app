@@ -36,19 +36,29 @@ def init_db():
 
 # --- ↓↓↓ ここからが今回のメイン ↓↓↓ ---
 
-@app.route('/')
-def index():
-    db = get_db()
-    customers_data = db.execute('SELECT * FROM customers ORDER BY id').fetchall()
-    
-    for customer in customers_data:
-        print(dict(customer)) # 辞書形式で見やすく表示
-    print("---------------------------------")
-    
-    return render_template('index.html', customers=customers_data)
+# app.py の index() 関数を書き換える
 
-# --- ↑↑↑ ここまでが今回のメイン ↑↑↑ ---
-# app.py の末尾に追記
+# URLに<int:customer_id>を追加し、デフォルト値をNoneに
+@app.route('/', defaults={'customer_id': None})
+@app.route('/<int:customer_id>')
+def index(customer_id):
+    db = get_db()
+    customers_data = db.execute('SELECT * FROM customers ORDER BY name').fetchall()
+    
+    selected_customer = None
+    visits_data = []
+
+    if customer_id:
+        # 顧客が選択されている場合
+        selected_customer = db.execute('SELECT * FROM customers WHERE id = ?', (customer_id,)).fetchone()
+        visits_data = db.execute('SELECT * FROM visits WHERE customer_id = ? ORDER BY visit_date DESC', (customer_id,)).fetchall()
+
+    return render_template(
+        'index.html', 
+        customers=customers_data, 
+        selected_customer=selected_customer, 
+        visits=visits_data
+    )
 
 # --- 新規顧客を追加するための処理 ---
 @app.route('/add', methods=['POST'])
