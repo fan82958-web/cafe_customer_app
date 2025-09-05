@@ -76,6 +76,36 @@ def add_customer():
     # 登録が終わったら、トップページにリダイレクト（再表示）する
     return redirect(url_for('index'))
 # このファイルが直接実行された場合にアプリを起動 (変更なし)
+
+# app.py の末尾に追記
+
+# --- 来店履歴を追加するための処理 ---
+@app.route('/<int:customer_id>/add_visit', methods=['POST'])
+def add_visit(customer_id):
+    # フォームからデータを取得
+    visit_date = request.form['visit_date']
+    orders = request.form['orders']
+    memo = request.form['memo']
+    
+    db = get_db()
+    # 1. visitsテーブルに新しい履歴を挿入
+    db.execute(
+        'INSERT INTO visits (customer_id, visit_date, orders, memo) VALUES (?, ?, ?, ?)',
+        (customer_id, visit_date, orders, memo)
+    )
+    
+    # 2. customersテーブルの来店回数(visit_count)を1増やす
+    db.execute(
+        'UPDATE customers SET visit_count = visit_count + 1 WHERE id = ?',
+        (customer_id,)
+    )
+    
+    # 3. 変更をデータベースに確定
+    db.commit()
+    
+    # 登録が終わったら、同じ顧客の詳細ページにリダイレクトして結果をすぐに見られるようにする
+    return redirect(url_for('index', customer_id=customer_id))
+
 if __name__ == '__main__':
     # データベース初期化用のコマンドを追加 (後で使う)
     # init_db() # 起動時に毎回初期化するのはやめる

@@ -63,13 +63,21 @@
     </div>
     <hr>
 
-    <h3>来店履歴の追加</h3>
-    <!-- このフォームは次のステップで実装 -->
-    <form>
-        ...
-    </form>
-    <hr>
-
+<!-- index.html の右パネルのフォーム部分 -->
+<h3>来店履歴の追加</h3>
+<form action="{{ url_for('add_visit', customer_id=selected_customer['id']) }}" method="post">
+    <!-- 注文日を自動で入れたいが、まずは手動で -->
+    <label for="visitDate">来店日:</label>
+    <input type="date" id="visitDate" name="visit_date" required>
+    
+    <label for="orderHistory">注文内容:</label>
+    <textarea id="orderHistory" name="orders" rows="3" placeholder="カフェラテ、チーズケーキ"></textarea>
+    
+    <label for="memo">メモ:</label>
+    <textarea id="memo" name="memo" rows="3" placeholder="娘さんの受験の話。次回聞く。"></textarea>
+    
+    <button type="submit">この内容で来店を記録</button>
+</form>
     <h3>過去の来店履歴 (直近5件)</h3>
     <ul>
         {% for visit in visits[:5] %}
